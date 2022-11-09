@@ -8,18 +8,10 @@ import { useRouter } from "next/router";
 export default function SignIn({ providers }) {
 const router = useRouter();
 const { query: { callbackUrl } } = useRouter();
-  const handleDemoSignIn = () => {
-    signIn("credentials", { username: "Carlos Cat", password: "password", redirect: false});
-    router.push('/')
-  };
-  const handleGoogleSignIn = (id) => {
-    signIn(id, {callbackUrl});
-    router.push('/')
-  };
   
   return (
     <div className="h-screen bg-amazon_blue">
-      <div className="flex h-[80%] items-center justify-center flex-col gap-10">
+      <div onClick={() => router.push('/')} className="flex h-[80%] items-center justify-center flex-col gap-10">
         <Image
           src="https://links.papareact.com/f90"
           width={150}
@@ -39,14 +31,14 @@ const { query: { callbackUrl } } = useRouter();
               {provider.name === "Google" && (
                 <button
                   className="signInButton"
-                  onClick={() => handleGoogleSignIn(provider.id)}
+                  onClick={() =>  signIn(provider.id, {callbackUrl})}
                 >
                   <img className="h-6" src={google} alt="" />
                   Sign in with {provider.name}
                 </button>
               )}
               {provider.name === "Credentials" && (
-                <button className="signInButton" onClick={() => handleDemoSignIn()}>
+                <button className="signInButton" onClick={() => signIn("credentials", { username: "Carlos Cat", password: "password", callbackUrl})}>
                   Sign in with Demo
                 </button>
               )}
