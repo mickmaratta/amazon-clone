@@ -9,7 +9,7 @@ export const authOptions = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
-   /*  CredentialsProvider({
+    CredentialsProvider({
       name: "Credentials",
       credentials: {},
       async authorize(credentials, req) {
@@ -27,11 +27,11 @@ export const authOptions = {
           return null
         }
       }
-    }) */
+    })
   ],
   secret:process.env.SECRET,
- /*  pages: {
+  pages: {
     signIn: "/auth/signin",
-  }, */
+  },
 }
 export default NextAuth(authOptions)
