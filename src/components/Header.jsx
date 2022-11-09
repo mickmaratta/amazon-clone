@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { MagnifyingGlassIcon, Bars3Icon } from "@heroicons/react/24/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Header = () => {
+  const { data: session } = useSession();
+
   return (
     <header>
       {/* TOP NAV */}
@@ -26,25 +29,31 @@ const Header = () => {
         </div>
 
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          <div className="link">
-            <p>Hello Carlos Cat</p>
-            <p className="font-extrabold md:text-sm">Account & Lists</p>
+          <div className="link" onClick={!session ? signIn : signOut}>
+            <p>{session ? `Hello ${session.user.name}` : "Hello Guest"}</p>
+            <p className="font-extrabold md:text-sm">{session ? 'Logout' : 'Sign In'}</p>
           </div>
           <div className="link">
             <p>Returns</p>
             <p className="font-extrabold md:text-sm">& Orders</p>
           </div>
           <div className="relative link flex items-center">
-            <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 rounded-full text-center text-black font-bold">2</span>
+            <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 rounded-full text-center text-black font-bold">
+              2
+            </span>
             <ShoppingCartIcon className="h-10" />
-            <p className="hidden md:inline mt-2 font-extrabold md:text-sm">Basket</p>
+            <p className="hidden md:inline mt-2 font-extrabold md:text-sm">
+              Basket
+            </p>
           </div>
         </div>
       </div>
 
       {/* BOTTOM NAV */}
       <div className="flex space-x-3 p-2 pl-6 items-center bg-amazon_blue-light text-white text-sm">
-        <p className="link flex items-center"><Bars3Icon className="h-6 mr-1" /> All</p>
+        <p className="link flex items-center">
+          <Bars3Icon className="h-6 mr-1" /> All
+        </p>
         <p className="link">Prime Video</p>
         <p className="link">Amazon Business</p>
         <p className="link">Today's Deals</p>
