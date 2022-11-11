@@ -1,10 +1,19 @@
-import firebase from 'firebase';
+import firebase from "firebase/app";
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCJz0KIx2XPTlZzP6h3tpw7078enGh51eQ",
-    authDomain: "amzn-cln-2.firebaseapp.com",
-    projectId: "amzn-cln-2",
-    storageBucket: "amzn-cln-2.appspot.com",
-    messagingSenderId: "851078737182",
-    appId: "1:851078737182:web:ffd183e59727d96cbced0f"
-  };
+  apiKey: "AIzaSyCJz0KIx2XPTlZzP6h3tpw7078enGh51eQ",
+  authDomain: "amzn-cln-2.firebaseapp.com",
+  projectId: "amzn-cln-2",
+  storageBucket: "amzn-cln-2.appspot.com",
+  messagingSenderId: "851078737182",
+  appId: "1:851078737182:web:ffd183e59727d96cbced0f",
+};
+
+const app = !firebase?.apps?.length
+  ? initializeApp(firebaseConfig)
+  : firebase.app();
+
+const db = app.firestore;
+
+export default db;
