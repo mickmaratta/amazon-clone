@@ -10,7 +10,6 @@ const Header = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const items = useSelector(selectItems);
-
   return (
     <header>
       {/* TOP NAV */}

@@ -1,14 +1,28 @@
 import moment from "moment/moment";
 import { getSession, useSession } from "next-auth/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import db from "../../firebase";
 import Header from "../components/Header";
-import { doc, getDoc } from "firebase/firestore";
-import { firestore } from "firebase-admin";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { app } from "firebase-admin";
 
 const orders = ({ orders }) => {
-  const { data: session } = useSession();
-
+  const session = useSession();
+  const [firebaseOrders, setFirebaseOrders] = useState([])
+  
+/*   useEffect(() => {
+    const getOrders = async () => {
+      
+      const user = session.data?.user.email;
+      const querySnapshot = await getDocs(collection(db, `users/carlos@example.com/orders`));
+      querySnapshot.forEach((doc) => {
+        setFirebaseOrders(firebaseOrders.push(doc.data()))
+      })
+  }
+    getOrders();
+  }, []) */
+  
+  console.log(orders)
   return (
     <div>
       <Header />
@@ -44,15 +58,16 @@ export async function getServerSideProps(context) {
   }
 
   // Firebase db
-  const snapshot = await db
+ /*  const stripeOrders = await db
     .collection("users")
     .doc(session.user.email)
     .collection("orders")
     .orderBy("timestamp", "desc")
-    .get();
+    .get(); */
 
-  const stripeOrders = snapshot.docs.map(doc=>doc.data)
-
+   /*  const docRef = doc(db, 'users', session.user.email);
+    const docSnap = await getDoc(docRef);
+    const stripeOrders = docSnap.data() */
   //Stripe orders
  /*  const orders = await Promise.all(
     stripeOrders.docs.map(async (order) => ({
@@ -68,10 +83,15 @@ export async function getServerSideProps(context) {
       ).data,
     }))
   ); */
+  let orders;
+  /* const querySnapshot = await getDocs(collection(db, `users/carlos@example.com/orders`));
+      querySnapshot.forEach((doc) => {
+        orders.push(doc.data())
+      }) */
 
   return {
     props: {
-      stripeOrders,
+      orders,
     },
   };
 }
