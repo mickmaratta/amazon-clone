@@ -4,25 +4,30 @@ import React, { useEffect, useState } from "react";
 import db from "../../firebase";
 import Header from "../components/Header";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { app } from "firebase-admin";
 
 const orders = ({ orders }) => {
-  const session = useSession();
+  const {data : session} = useSession();
   const [firebaseOrders, setFirebaseOrders] = useState([])
   
-/*   useEffect(() => {
+  useEffect(() => {
     const getOrders = async () => {
       
-      const user = session.data?.user.email;
+      const user = session?.user.email
       const querySnapshot = await getDocs(collection(db, `users/carlos@example.com/orders`));
-      querySnapshot.forEach((doc) => {
-        setFirebaseOrders(firebaseOrders.push(doc.data()))
-      })
+      
+      const orders = querySnapshot.docs.map(doc => doc.data());
+      //console.log(orders)
+      setFirebaseOrders(orders)
+      /* querySnapshot.forEach((doc) => {
+        let newOrder = doc.data()
+        //console.log(typeof newOrder)
+        setFirebaseOrders([...firebaseOrders, newOrder])
+      }) */
   }
     getOrders();
-  }, []) */
-  
-  console.log(orders)
+  }, [])
+  const time = moment(firebaseOrders[0]?.timestamp.toDate()).unix()
+  console.log(time)
   return (
     <div>
       <Header />
@@ -45,7 +50,7 @@ const orders = ({ orders }) => {
 
 export default orders;
 
-export async function getServerSideProps(context) {
+/* export async function getServerSideProps(context) {
   const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
   //Get the users logged in credentials
@@ -58,18 +63,16 @@ export async function getServerSideProps(context) {
   }
 
   // Firebase db
- /*  const stripeOrders = await db
+  const stripeOrders = await db
     .collection("users")
     .doc(session.user.email)
     .collection("orders")
     .orderBy("timestamp", "desc")
-    .get(); */
+    .get();
 
-   /*  const docRef = doc(db, 'users', session.user.email);
-    const docSnap = await getDoc(docRef);
-    const stripeOrders = docSnap.data() */
+
   //Stripe orders
- /*  const orders = await Promise.all(
+  const orders = await Promise.all(
     stripeOrders.docs.map(async (order) => ({
       id: order.id,
       amount: order.data().images,
@@ -82,16 +85,12 @@ export async function getServerSideProps(context) {
         })
       ).data,
     }))
-  ); */
-  let orders;
-  /* const querySnapshot = await getDocs(collection(db, `users/carlos@example.com/orders`));
-      querySnapshot.forEach((doc) => {
-        orders.push(doc.data())
-      }) */
+  );
+
 
   return {
     props: {
-      orders,
+     
     },
   };
-}
+} */
