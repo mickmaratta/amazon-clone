@@ -30,6 +30,7 @@ const fulfillOrder = async (session) => {
       prices: JSON.parse(session.metadata.prices),
       images: JSON.parse(session.metadata.images),
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      id: session.id
     })
     .then(() => {
       console.log(

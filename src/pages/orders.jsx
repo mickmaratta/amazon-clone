@@ -3,31 +3,24 @@ import { getSession, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import db from "../../firebase";
 import Header from "../components/Header";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import Order from "../components/Order";
 
-const orders = ({ orders }) => {
-  const {data : session} = useSession();
-  const [firebaseOrders, setFirebaseOrders] = useState([])
-  
+const orders = ({ user }) => {
+  const { data: session } = useSession();
+  const [firebaseOrders, setFirebaseOrders] = useState([]);
+
   useEffect(() => {
     const getOrders = async () => {
-      
-      const user = session?.user.email
-      const querySnapshot = await getDocs(collection(db, `users/carlos@example.com/orders`));
-      
-      const orders = querySnapshot.docs.map(doc => doc.data());
-      //console.log(orders)
-      setFirebaseOrders(orders)
-      /* querySnapshot.forEach((doc) => {
-        let newOrder = doc.data()
-        //console.log(typeof newOrder)
-        setFirebaseOrders([...firebaseOrders, newOrder])
-      }) */
-  }
+      const querySnapshot = await getDocs(
+        collection(db, `users/${user}/orders`)
+      );
+      const orders = querySnapshot.docs.map((doc) => doc.data());
+      setFirebaseOrders(orders);
+    };
     getOrders();
-  }, [])
-  const time = moment(firebaseOrders[0]?.timestamp.toDate()).unix()
-  console.log(time)
+  }, []);
+
   return (
     <div>
       <Header />
@@ -37,12 +30,16 @@ const orders = ({ orders }) => {
         </h1>
 
         {session ? (
-          <h2>x Orders</h2>
+          <h2>{firebaseOrders.length} Order(s)</h2>
         ) : (
           <h2>Please sign in to see your orders</h2>
         )}
 
-        <div className="mt-5 space-y-4"></div>
+        <div className="mt-5 space-y-4">
+          {firebaseOrders?.map((order) => (
+            <Order key={order.id} order={order} />
+          ))}
+        </div>
       </main>
     </div>
   );
@@ -50,47 +47,13 @@ const orders = ({ orders }) => {
 
 export default orders;
 
-/* export async function getServerSideProps(context) {
-  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-  //Get the users logged in credentials
+export async function getServerSideProps(context) {
   const session = await getSession(context);
-
-  if (!session) {
-    return {
-      props: {},
-    };
-  }
-
-  // Firebase db
-  const stripeOrders = await db
-    .collection("users")
-    .doc(session.user.email)
-    .collection("orders")
-    .orderBy("timestamp", "desc")
-    .get();
-
-
-  //Stripe orders
-  const orders = await Promise.all(
-    stripeOrders.docs.map(async (order) => ({
-      id: order.id,
-      amount: order.data().images,
-      amountShipping: order.data().amount_shipping,
-      images: order.data().images,
-      timestamp: moment(order.data().timestamp.toDate()).unix(),
-      items: (
-        await stripe.chekout.sessions.listLineItems(order.id, {
-          limit: 100,
-        })
-      ).data,
-    }))
-  );
-
+  const user = session.user.email;
 
   return {
     props: {
-     
+      user,
     },
   };
-} */
+}
