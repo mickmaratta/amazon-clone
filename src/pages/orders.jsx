@@ -22,7 +22,7 @@ const orders = ({ user }) => {
       setFirebaseOrders(orders);
       setIsLoading(false)
     };
-    getOrders();
+    user && getOrders();
   }, []);
 
   return (
@@ -32,7 +32,7 @@ const orders = ({ user }) => {
         <h1 className="text-3xl border-b mb-2 pb-1 border-yellow-400">
           Your Orders
         </h1>
-        {isLoading && <span className="text-lg text-gray-500 animate-pulse mb-10">Loading orders...</span>}
+        {isLoading && user && <span className="text-lg text-gray-500 animate-pulse mb-10">Loading orders...</span>}
         {session ? (
           <h2>{firebaseOrders.length} Order(s)</h2>
         ) : (
@@ -53,6 +53,11 @@ export default orders;
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  if(!session) {
+    return {
+      props: {}
+    }
+  }
   const user = session.user.email;
 
   return {
