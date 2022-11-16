@@ -9,14 +9,18 @@ import Order from "../components/Order";
 const orders = ({ user }) => {
   const { data: session } = useSession();
   const [firebaseOrders, setFirebaseOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    setIsLoading(true)
     const getOrders = async () => {
       const querySnapshot = await getDocs(
         collection(db, `users/${user}/orders`)
       );
       const orders = querySnapshot.docs.map((doc) => doc.data());
+      orders.sort((a, b) => b.timestamp - a.timestamp)
       setFirebaseOrders(orders);
+      setIsLoading(false)
     };
     getOrders();
   }, []);
@@ -28,7 +32,7 @@ const orders = ({ user }) => {
         <h1 className="text-3xl border-b mb-2 pb-1 border-yellow-400">
           Your Orders
         </h1>
-
+        {isLoading && <span className="text-lg text-gray-500 animate-pulse mb-10">Loading orders...</span>}
         {session ? (
           <h2>{firebaseOrders.length} Order(s)</h2>
         ) : (

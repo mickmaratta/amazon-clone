@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCJz0KIx2XPTlZzP6h3tpw7078enGh51eQ",
+  apiKey: process.env.FIREBASE_API,
   authDomain: "amzn-cln-2.firebaseapp.com",
   projectId: "amzn-cln-2",
   storageBucket: "amzn-cln-2.appspot.com",
@@ -17,7 +17,6 @@ export const app = !firebase?.apps?.length
   : firebase.app();
 
 //export const app = initializeApp(firebaseConfig);
-const auth = getAuth();
 const db = getFirestore();
 
 export default db;
